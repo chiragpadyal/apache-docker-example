@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: mysql-test
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    volumes:
+      - ./mysql-initdb:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  frontend:
+    container_name: apache-frontend
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile 
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
